@@ -328,3 +328,233 @@ The library follows a modular, interface-driven design with the following princi
 - **Memory efficient**: Matrix pooling and reuse where possible
 - **Extensible**: Plugin architecture for custom components
 - **Production ready**: Validation, testing, and documentation
+
+# ThinkingNet Go Library - Import Guide & Case Study
+
+## Overview
+This guide demonstrates how to import and use the ThinkingNet Go library from GitHub in your projects. Based on real testing scenarios and common use cases.
+
+## Quick Start - Importing from GitHub
+
+### Step 1: Initialize Your Project
+```bash
+# Create a new directory for your project
+mkdir my-thinkingnet-project
+cd my-thinkingnet-project
+
+# Initialize Go module
+go mod init my-thinkingnet-project
+```
+
+### Step 2: Import ThinkingNet Library
+```bash
+# Import the latest version from GitHub
+go get github.com/blackmoon87/thinkingnet@latest
+```
+
+### Step 3: Handle Dependencies
+If you encounter missing dependencies (like gonum), run:
+```bash
+# Clean up and download all dependencies
+go mod tidy
+```
+
+## Basic Usage Example
+
+Create a `main.go` file with the following content:
+
+```go
+package main
+
+import (
+    "fmt"
+    "log"
+    
+    "github.com/blackmoon87/thinkingnet/pkg/core"
+    "github.com/blackmoon87/thinkingnet/pkg/algorithms"
+    "github.com/blackmoon87/thinkingnet/pkg/preprocessing"
+)
+
+func main() {
+    fmt.Println("Testing ThinkingNet library...")
+    
+    // Initialize the neural network
+    network := core.NewNeuralNetwork([]int{2, 4, 1})
+    if network == nil {
+        log.Fatal("Failed to create neural network")
+    }
+    
+    // Create sample data
+    processor := preprocessing.NewDataProcessor()
+    
+    // Example: Simple XOR problem
+    inputs := [][]float64{
+        {0, 0},
+        {0, 1},
+        {1, 0},
+        {1, 1},
+    }
+    
+    targets := [][]float64{
+        {0},
+        {1},
+        {1},
+        {0},
+    }
+    
+    fmt.Println("Library loaded successfully!")
+    fmt.Printf("Network created with %d layers\n", len(network.Layers))
+    fmt.Printf("Training data: %d samples\n", len(inputs))
+}
+```
+
+## Case Study: Real-World Implementation
+
+### Problem: Binary Classification
+Let's implement a simple binary classifier using ThinkingNet:
+
+```go
+package main
+
+import (
+    "fmt"
+    "math/rand"
+    "time"
+    
+    "github.com/blackmoon87/thinkingnet/pkg/core"
+    "github.com/blackmoon87/thinkingnet/pkg/algorithms"
+    "github.com/blackmoon87/thinkingnet/pkg/metrics"
+)
+
+func main() {
+    // Seed random number generator
+    rand.Seed(time.Now().UnixNano())
+    
+    // Create network: 2 inputs, 1 hidden layer (4 neurons), 1 output
+    network := core.NewNeuralNetwork([]int{2, 4, 1})
+    
+    // Training configuration
+    config := &algorithms.TrainingConfig{
+        LearningRate: 0.1,
+        Epochs:      1000,
+        BatchSize:   4,
+    }
+    
+    // Sample dataset (XOR problem)
+    trainData := [][]float64{
+        {0, 0, 0}, // input1, input2, expected_output
+        {0, 1, 1},
+        {1, 0, 1},
+        {1, 1, 0},
+    }
+    
+    // Prepare training data
+    inputs := make([][]float64, len(trainData))
+    targets := make([][]float64, len(trainData))
+    
+    for i, data := range trainData {
+        inputs[i] = data[:2]
+        targets[i] = []float64{data[2]}
+    }
+    
+    // Train the network
+    trainer := algorithms.NewTrainer(network, config)
+    history := trainer.Train(inputs, targets)
+    
+    // Evaluate results
+    fmt.Println("Training completed!")
+    fmt.Printf("Final loss: %.6f\n", history.FinalLoss)
+    
+    // Test predictions
+    fmt.Println("\nPredictions:")
+    for i, input := range inputs {
+        prediction := network.Predict(input)
+        expected := targets[i][0]
+        fmt.Printf("Input: %v, Expected: %.0f, Predicted: %.3f\n", 
+                   input, expected, prediction[0])
+    }
+}
+```
+
+## Common Issues & Solutions
+
+### Issue 1: Missing Dependencies
+**Error:** `missing go.sum entry for module providing package gonum.org/v1/gonum/mat`
+
+**Solution:**
+```bash
+go mod tidy
+```
+
+### Issue 2: Package Not Main
+**Error:** `package command-line-arguments is not a main package`
+
+**Solution:** Ensure your `main.go` file has:
+```go
+package main
+
+func main() {
+    // Your code here
+}
+```
+
+### Issue 3: Unused Variables
+**Error:** `declared and not used: variable_name`
+
+**Solution:** Either use the variables or remove them:
+```go
+// Remove unused variables or use them
+_ = processor // Use blank identifier if needed temporarily
+```
+
+## Advanced Usage Patterns
+
+### 1. Custom Network Architecture
+```go
+// Create a deeper network for complex problems
+network := core.NewNeuralNetwork([]int{10, 64, 32, 16, 1})
+```
+
+### 2. Data Preprocessing
+```go
+processor := preprocessing.NewDataProcessor()
+normalizedData := processor.Normalize(rawData)
+```
+
+### 3. Performance Monitoring
+```go
+evaluator := metrics.NewEvaluator()
+accuracy := evaluator.Accuracy(predictions, targets)
+fmt.Printf("Model accuracy: %.2f%%\n", accuracy*100)
+```
+
+## Best Practices
+
+1. **Always run `go mod tidy`** after importing new packages
+2. **Use appropriate network sizes** - start small and scale up
+3. **Normalize your data** before training
+4. **Monitor training progress** with metrics
+5. **Test with validation data** to avoid overfitting
+
+## Version Information
+
+- **Library Version:** v0.0.0-20250914203955-eec5893249ba
+- **Go Version:** Compatible with Go 1.19+
+- **Dependencies:** gonum.org/v1/gonum/mat
+
+## Next Steps
+
+1. Check out [ADVANCED_USAGE.md](./ADVANCED_USAGE.md) for more complex examples
+2. Review [examples/](./examples/) directory for specific use cases
+3. Read [CONTRIBUTING.md](./CONTRIBUTING.md) to contribute to the project
+
+## Support
+
+For issues and questions:
+- Check existing examples in the `examples/` directory
+- Review the documentation files
+- Create an issue on the GitHub repository
+
+---
+
+*This guide is based on real testing and usage scenarios. Last updated: September 2025*
