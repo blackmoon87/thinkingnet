@@ -328,5 +328,3 @@ The library follows a modular, interface-driven design with the following princi
 - **Memory efficient**: Matrix pooling and reuse where possible
 - **Extensible**: Plugin architecture for custom components
 - **Production ready**: Validation, testing, and documentation
-
-For detailed architecture information, see the design document in `.kiro/specs/production-ai-library/design.md`.
