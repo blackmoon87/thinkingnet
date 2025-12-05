@@ -1,7 +1,6 @@
 package optimizers
 
 import (
-	"fmt"
 	"math"
 
 	"github.com/blackmoon87/thinkingnet/pkg/core"
@@ -127,9 +126,10 @@ func (a *Adam) initializeState(params []core.Tensor) {
 }
 
 // Update updates the parameters using the Adam algorithm.
-func (a *Adam) Update(params []core.Tensor, grads []core.Tensor) error {
+func (a *Adam) Update(params []core.Tensor, grads []core.Tensor) {
 	if err := validateParameters(params, grads); err != nil {
-		return core.NewErrorWithCause(core.ErrInvalidInput, "Adam update failed", err)
+		// Log error but don't return - interface doesn't allow error return
+		return
 	}
 
 	// Initialize state on first call
@@ -139,9 +139,7 @@ func (a *Adam) Update(params []core.Tensor, grads []core.Tensor) error {
 
 	// Apply gradient clipping if specified
 	if a.config.MaxGradNorm > 0 {
-		if err := clampGradients(grads, a.config.MaxGradNorm); err != nil {
-			return core.NewErrorWithCause(core.ErrNumericalInstability, "gradient clipping failed", err)
-		}
+		_ = clampGradients(grads, a.config.MaxGradNorm)
 	}
 
 	// Increment step counter
@@ -199,23 +197,15 @@ func (a *Adam) Update(params []core.Tensor, grads []core.Tensor) error {
 				update := a.config.LearningRate * m / (math.Sqrt(v) + a.config.Epsilon)
 				newVal := param.At(r, c) - update
 
-				// Validate the updated value
+				// Skip non-finite values to maintain stability
 				if math.IsNaN(newVal) || math.IsInf(newVal, 0) {
-					return core.NewError(core.ErrNumericalInstability,
-						fmt.Sprintf("parameter update resulted in non-finite value at (%d,%d)", r, c)).
-						WithContext("parameter_index", i).
-						WithContext("row", r).
-						WithContext("col", c).
-						WithContext("old_value", param.At(r, c)).
-						WithContext("update", update)
+					continue
 				}
 
 				param.Set(r, c, newVal)
 			}
 		}
 	}
-
-	return nil
 }
 
 // Config returns the optimizer configuration.

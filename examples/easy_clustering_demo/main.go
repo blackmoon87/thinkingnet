@@ -644,7 +644,7 @@ func showClusteringTips() {
 
 	fmt.Println("مثال على كود متقدم:")
 	fmt.Println("Example of advanced code:")
-	fmt.Println(`
+	exampleCode := `
 // تجربة إعدادات مختلفة لـ K-means
 // Try different K-means settings
 func experimentWithKMeans(X core.Tensor) {
@@ -659,7 +659,7 @@ func experimentWithKMeans(X core.Tensor) {
         
         err := kmeans.Fit(X)
         if err == nil {
-            fmt.Printf("طريقة التهيئة %s: القصور = %.4f\n", 
+            fmt.Printf("طريقة التهيئة: %v, القصور = %.4f\n", 
                 initMethod, kmeans.Inertia())
         }
     }
@@ -678,6 +678,7 @@ func compareAlgorithms(X core.Tensor) {
     
     // قارن النتائج / Compare results
     fmt.Printf("K-means clusters: 3\n")
-    fmt.Printf("DBSCAN clusters: %d\n", dbscan.NClusters())
-}`)
+    fmt.Printf("DBSCAN clusters: %v\n", dbscan.NClusters())
+}`
+	fmt.Println(exampleCode)
 }

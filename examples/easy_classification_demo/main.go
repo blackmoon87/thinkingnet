@@ -173,26 +173,26 @@ func loadMoonsData(filename string) (core.Tensor, core.Tensor, error) {
 
 	for i, record := range records {
 		if len(record) != 3 {
-			return nil, nil, fmt.Errorf("صف غير صحيح في السطر %d / Invalid row at line %d", i+2)
+			return nil, nil, fmt.Errorf("صف غير صحيح في السطر %d / Invalid row at line %d", i+2, i+2)
 		}
 
 		// قراءة الخصائص (feature_1, feature_2)
 		// Read features (feature_1, feature_2)
 		feature1, err := strconv.ParseFloat(record[0], 64)
 		if err != nil {
-			return nil, nil, fmt.Errorf("خطأ في تحويل feature_1 في السطر %d / Error parsing feature_1 at line %d: %v", i+2, err)
+			return nil, nil, fmt.Errorf("خطأ في تحويل feature_1 في السطر %d / Error parsing feature_1 at line %d: %v", i+2, i+2, err)
 		}
 
 		feature2, err := strconv.ParseFloat(record[1], 64)
 		if err != nil {
-			return nil, nil, fmt.Errorf("خطأ في تحويل feature_2 في السطر %d / Error parsing feature_2 at line %d: %v", i+2, err)
+			return nil, nil, fmt.Errorf("خطأ في تحويل feature_2 في السطر %d / Error parsing feature_2 at line %d: %v", i+2, i+2, err)
 		}
 
 		// قراءة التصنيف (label)
 		// Read label
 		label, err := strconv.ParseFloat(record[2], 64)
 		if err != nil {
-			return nil, nil, fmt.Errorf("خطأ في تحويل label في السطر %d / Error parsing label at line %d: %v", i+2, err)
+			return nil, nil, fmt.Errorf("خطأ في تحويل label في السطر %d / Error parsing label at line %d: %v", i+2, i+2, err)
 		}
 
 		XData = append(XData, []float64{feature1, feature2})

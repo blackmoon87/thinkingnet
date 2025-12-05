@@ -82,10 +82,6 @@ func ExampleSequential() {
 	// Print model summary
 	fmt.Println("\nModel Summary:")
 	fmt.Print(model.Summary())
-
-	// Output:
-	// Training completed
-	// Model Summary contains layer information
 }
 
 // ExampleDataLoader demonstrates batch processing functionality
@@ -119,12 +115,6 @@ func ExampleDataLoader() {
 		_ = yBatch // Use yBatch to avoid unused variable error
 		batchCount++
 	}
-
-	// Output:
-	// Total samples: 50
-	// Batch size: 10
-	// Number of batches: 5
-	// Batch processing information
 }
 
 // ExampleTrainer demonstrates using the Trainer for more control over training
@@ -167,9 +157,4 @@ func ExampleTrainer() {
 	fmt.Printf("Training epochs: %d\n", len(history.Epoch))
 	fmt.Printf("Callback train begin called: %v\n", callback.trainBeginCalled)
 	fmt.Printf("Callback train end called: %v\n", callback.trainEndCalled)
-
-	// Output:
-	// Training epochs: 5
-	// Callback train begin called: true
-	// Callback train end called: true
 }

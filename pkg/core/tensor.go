@@ -50,7 +50,17 @@ func NewTensorFromData(rows, cols int, data []float64) *DenseTensor {
 }
 
 // NewZerosTensor creates a tensor filled with zeros.
+// Returns an empty tensor if rows or cols is 0.
 func NewZerosTensor(rows, cols int) *DenseTensor {
+	if rows <= 0 || cols <= 0 {
+		// Return an empty tensor representation without using mat.NewDense
+		// since gonum panics on zero dimensions
+		return &DenseTensor{
+			data:  nil,
+			shape: []int{0, 0},
+			name:  "",
+		}
+	}
 	return NewTensor(mat.NewDense(rows, cols, nil))
 }
 
@@ -65,6 +75,9 @@ func NewOnesTensor(rows, cols int) *DenseTensor {
 
 // Dims returns the dimensions of the tensor.
 func (t *DenseTensor) Dims() (int, int) {
+	if t.data == nil {
+		return 0, 0
+	}
 	return t.data.Dims()
 }
 

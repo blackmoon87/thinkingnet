@@ -44,17 +44,20 @@ func main() {
 
 	// إضافة طبقات
 	// Add layers
-	model.AddLayer(layers.NewDense(4, activations.NewReLU()))
-	model.AddLayer(layers.NewDense(1, activations.NewSigmoid()))
+	model.AddLayer(layers.NewDense(4, &layers.DenseConfig{Activation: activations.NewReLU()}))
+	model.AddLayer(layers.NewDense(1, &layers.DenseConfig{Activation: activations.NewSigmoid()}))
 
 	fmt.Println("Model layers added")
 
 	// تجميع النموذج
 	// Compile the model
-	optimizer := optimizers.NewAdam(0.01)
+	optimizer, err := optimizers.NewAdamWithDefaults(0.01)
+	if err != nil {
+		log.Fatalf("خطأ في إنشاء المُحسِّن / Optimizer creation error: %v", err)
+	}
 	loss := losses.NewBinaryCrossEntropy()
 
-	err := model.Compile(optimizer, loss)
+	err = model.Compile(optimizer, loss)
 	if err != nil {
 		log.Fatalf("خطأ في تجميع النموذج / Model compilation error: %v", err)
 	}

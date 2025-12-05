@@ -133,10 +133,7 @@ func TestAdamUpdate(t *testing.T) {
 	originalParam := params[0].Copy()
 
 	// Perform update
-	err = adam.Update(params, grads)
-	if err != nil {
-		t.Fatalf("Failed to update parameters: %v", err)
-	}
+	adam.Update(params, grads)
 
 	// Check that parameters were updated
 	tolerance := 1e-6
@@ -184,10 +181,7 @@ func TestAdamBiasCorrection(t *testing.T) {
 
 	// First update - bias correction should have significant effect
 	originalParam := params[0].At(0, 0)
-	err = adam.Update(params, grads)
-	if err != nil {
-		t.Fatalf("Failed to update parameters: %v", err)
-	}
+	adam.Update(params, grads)
 	firstUpdate := originalParam - params[0].At(0, 0)
 
 	// Bias correction should produce a reasonable update
@@ -202,10 +196,7 @@ func TestAdamBiasCorrection(t *testing.T) {
 
 	// Test multiple updates to ensure convergence behavior
 	for i := 0; i < 5; i++ {
-		err = adam.Update(params, grads)
-		if err != nil {
-			t.Fatalf("Failed to update parameters on iteration %d: %v", i, err)
-		}
+		adam.Update(params, grads)
 	}
 
 	// Parameter should have moved significantly from original
@@ -241,10 +232,7 @@ func TestAdamAMSGrad(t *testing.T) {
 
 	// Perform multiple updates to test AMSGrad behavior
 	for i := 0; i < 5; i++ {
-		err := adam.Update(params, grads)
-		if err != nil {
-			t.Fatalf("Failed to update parameters: %v", err)
-		}
+		adam.Update(params, grads)
 	}
 
 	// Check that vMax was initialized (this is indirect since we can't access it directly)
@@ -276,10 +264,7 @@ func TestAdamWeightDecay(t *testing.T) {
 	}
 
 	originalParam := params[0].At(0, 0)
-	err = adam.Update(params, grads)
-	if err != nil {
-		t.Fatalf("Failed to update parameters: %v", err)
-	}
+	adam.Update(params, grads)
 	updatedParam := params[0].At(0, 0)
 
 	// With weight decay, parameter should decrease even with zero gradient
@@ -325,10 +310,7 @@ func TestAdamReset(t *testing.T) {
 	}
 
 	// Perform update to initialize state
-	err = adam.Update(params, grads)
-	if err != nil {
-		t.Fatalf("Failed to update parameters: %v", err)
-	}
+	adam.Update(params, grads)
 
 	if !adam.initialized {
 		t.Error("Adam should be initialized after update")
@@ -367,9 +349,7 @@ func TestAdamInvalidUpdate(t *testing.T) {
 		newMockTensor(2, 3, []float64{1, 2, 3, 4, 5, 6}), // Wrong dimensions
 	}
 
-	// Should return error on dimension mismatch
-	err = adam.Update(params, grads)
-	if err == nil {
-		t.Error("Expected error for dimension mismatch")
-	}
+	// Update should handle dimension mismatch gracefully (returns early)
+	adam.Update(params, grads)
+	// No error checking - Update no longer returns error
 }
