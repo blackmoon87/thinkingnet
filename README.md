@@ -48,10 +48,10 @@ go get github.com/blackmoon87/thinkingnet
 
 ThinkingNet-Go achieves **MAXIMUM SPEED** with ultra-fast optimizations:
 
-- **🔥 1.68 BILLION operations/second** with ultra-fast processor (16.8x speedup)
-- **⚡ 708M sigmoid ops/sec** using lookup tables (4.6x speedup)
-- **🚀 928M mathematical ops/sec** with uint8 bitwise operations (2.94x speedup)
-- **💾 3.5x speedup** with memory pooling for matrix operations
+- **🔥 1.43 BILLION operations/second** with ultra-fast processor
+- **⚡ 1.01B ReLU ops/sec** with UltraFast activation processor
+- **🚀 897M Sigmoid ops/sec** using optimized lookup tables
+- **💾 9x speedup** with memory pooling for matrix operations
 - **🔧 Automatic ultra-fast optimization** for large tensors and batch processing
 - **📊 Built-in benchmarking** for performance monitoring and optimization
 
@@ -66,6 +66,102 @@ core.RunQuickBenchmark()
 processor := core.GetHighPerformanceProcessor()
 opsPerSecond := processor.PerformOperations(100_000_000) // 100M ops
 fmt.Printf("Achieved %.0f operations per second\n", opsPerSecond)
+```
+
+## 📊 Detailed Benchmark Results
+
+The following benchmarks were run on Windows/amd64 with 8 CPU cores using Go 1.25.5.
+
+### ⚡ Activation Functions Performance
+
+| Function | Implementation | Speed (ops/sec) |
+|----------|---------------|-----------------|
+| ReLU | UltraFast | **1.01 Billion** |
+| Sigmoid | UltraFast | **897 Million** |
+| ReLU | Parallel | 682 Million |
+| Sigmoid | Parallel | 356 Million |
+| Tanh | Parallel | 228 Million |
+| ReLU | Direct | 230 Million |
+| LeakyReLU | Direct | 160 Million |
+| ELU | Direct | 97 Million |
+| Sigmoid | Direct | 86 Million |
+| Swish | Direct | 81 Million |
+| Tanh | Direct | 76 Million |
+| GELU | Direct | 24 Million |
+
+### 🚀 High-Performance Operations
+
+| Operation | Speed |
+|-----------|-------|
+| UltraFast Processor | **1.43 Billion ops/sec** |
+| HighPerformance Processor | 438 Million ops/sec |
+| Batch Processing | 14.7 Million samples/sec |
+
+### 💾 Memory Management
+
+| Mode | Speed | Improvement |
+|------|-------|-------------|
+| With Memory Pooling | 112,661 ops/sec | **9x faster** |
+| Without Memory Pooling | 12,537 ops/sec | baseline |
+
+### 📐 Tensor Operations (100 iterations)
+
+| Operation | 64x64 | 128x128 | 256x256 | 512x512 |
+|-----------|-------|---------|---------|---------|
+| Transpose | 183K ops/s | - | 5.8K ops/s | 1.1K ops/s |
+| Scale | 95K ops/s | - | 8.7K ops/s | 1.9K ops/s |
+| Addition | 25K ops/s | - | 3.5K ops/s | 993 ops/s |
+| Subtraction | 36K ops/s | 5.3K ops/s | 3.6K ops/s | 954 ops/s |
+| Element Mul | 22K ops/s | 12.5K ops/s | 4K ops/s | 1K ops/s |
+| Matrix Mul | 14K ops/s | 295 ops/s | 33 ops/s | 3 ops/s |
+
+### 🔬 ML Algorithms (5,000 samples, 50 features)
+
+| Algorithm | Execution Time |
+|-----------|---------------|
+| PCA | **13.5 ms** ⚡ |
+| K-Means (10 clusters) | 259 ms |
+| Linear Regression | 2.65 s |
+| Logistic Regression | 2.83 s |
+| DBSCAN | 11.76 s |
+
+### 🧠 Neural Network Training
+
+| Metric | Value |
+|--------|-------|
+| Architecture | 128→256→128→64→10 |
+| Training Samples | 10,000 |
+| Epochs | 50 |
+| Forward Pass | ~5,897 samples/sec |
+| Full Training | ~3,336 samples/sec |
+| Total Training Time | ~2.5 minutes |
+
+### 📈 Preprocessing Operations
+
+| Operation | Speed |
+|-----------|-------|
+| Train-Test Split | 484 ops/sec |
+| MinMax Scaling | 220 ops/sec |
+| Standard Scaling | 163 ops/sec |
+
+### 🏆 Summary
+
+- **Total Operations Tested**: 771.8 Million
+- **Average Performance**: 1.63 Million ops/sec
+- **Test Success Rate**: 100% (67/67 tests passed)
+- **Total Benchmark Duration**: ~8 minutes
+
+### Running Benchmarks
+
+```go
+// Run the comprehensive stress test
+cd examples/stress_test_demo
+go run main.go
+
+// Or run quick benchmarks
+import "github.com/blackmoon87/thinkingnet/pkg/core"
+core.RunQuickBenchmark()
+core.RunUltraFastBenchmark()
 ```
 
 ## Quick Start
